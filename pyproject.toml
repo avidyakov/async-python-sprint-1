@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "async-python-sprint-1"
+version = "0.1.0"
+description = ""
+authors = ["Alex Vidyakov <alex.vidyakov@yandex.ru>"]
+readme = "README.md"
+packages = [{include = "async_python_sprint_1"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pre-commit = "^2.20.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
