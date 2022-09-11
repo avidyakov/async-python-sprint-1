@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
+from models import CityModel
 from tasks import DataFetchingTask
-from validators import ResponseValidator
 
 
 class TestDataFetchingTask:
@@ -9,7 +9,7 @@ class TestDataFetchingTask:
         city_name = "MOSCOW"
         weather_api = MagicMock()
         weather_api.get_forecasting.return_value = response
-        task = DataFetchingTask(city_name, weather_api, ResponseValidator)
+        task = DataFetchingTask(city_name, weather_api, CityModel)
 
         actual = task.run()
 

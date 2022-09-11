@@ -5,14 +5,14 @@ from utils import YandexWeatherAPI
 
 class DataFetchingTask:
     def __init__(
-        self, city: str, weather_api: YandexWeatherAPI, validator: BaseModel
+        self, city: str, ya_weather_api: YandexWeatherAPI, validator: type[BaseModel]
     ) -> None:
         self.city = city
-        self.weather_api = weather_api
+        self.ya_weather_api = ya_weather_api
         self.validator = validator
 
     def run(self) -> BaseModel:
-        response = self.weather_api.get_forecasting(self.city)
+        response = self.ya_weather_api.get_forecasting(self.city)
         return self.validator(city=self.city, **response)
 
 
