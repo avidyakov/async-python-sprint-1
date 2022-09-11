@@ -20,4 +20,5 @@ class ForecastValidator(BaseModel):
 
 
 class ResponseValidator(BaseModel):
+    city: str
     forecasts: list[ForecastValidator]

@@ -1,11 +1,8 @@
-from pathlib import Path
-
 from validators import ResponseValidator
 
 
 class TestResponseValidator:
-    def test_validate_response(self):
-        response_path = Path('examples/response.json')
+    def test_validate_response(self, response_path):
         validator = ResponseValidator.parse_file(response_path)
 
         assert len(validator.forecasts) == 5
