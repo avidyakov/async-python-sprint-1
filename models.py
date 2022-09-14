@@ -17,6 +17,8 @@ class HourModel(BaseModel):
 class DayModel(BaseModel):
     date: date
     hours: list[HourModel]
+    avg_temp: float | None
+    clear_sum: int | None
 
     def get_avg_temp(self) -> float:
         return sum(hour.temp for hour in self.hours) / len(self.hours)

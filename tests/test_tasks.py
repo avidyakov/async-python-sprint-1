@@ -1,7 +1,8 @@
 from unittest.mock import MagicMock
 
 from models import CityModel
-from tasks import DataFetchingTask
+from tasks import DataCalculationTask, DataFetchingTask
+from tests.factories import DayModelFactory
 
 
 class TestDataFetchingTask:
@@ -15,3 +16,13 @@ class TestDataFetchingTask:
 
         assert actual.city == city_name
         assert len(actual.forecasts) == 5
+
+
+class TestDataCalculationTask:
+    def test_run(self):
+        day = DayModelFactory.build()
+        task = DataCalculationTask(day)
+        task.run()
+
+        assert day.avg_temp == 27
+        assert day.clear_sum == 0

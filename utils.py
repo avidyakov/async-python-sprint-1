@@ -1,6 +1,6 @@
+import json
 import logging
 import sys
-import json
 
 if sys.version_info[0] == 3:
     from urllib.request import urlopen
@@ -31,12 +31,12 @@ ERR_MESSAGE_TEMPLATE = "Something wrong. Please connect with administrator."
 
 class YandexWeatherAPI:
     """
-        Base class for requests
+    Base class for requests
     """
 
     @staticmethod
     def _do_req(url, method="GET"):
-        """ Base request method """
+        """Base request method"""
 
         try:
             with urlopen(url) as req:
@@ -57,7 +57,9 @@ class YandexWeatherAPI:
     def _get_url_by_city_name(city_name):
         city_url = CITIES.get(city_name, None)
         if not city_url or city_url is None:
-            raise Exception("Please check that city {} exists".format(city_name))
+            raise Exception(
+                "Please check that city {} exists".format(city_name)
+            )
         return city_url
 
     def get_forecasting(self, city_name):

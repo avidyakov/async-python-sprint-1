@@ -3,14 +3,6 @@
 # import subprocess
 # import multiprocessing
 
-from utils import YandexWeatherAPI, CITIES
-from tasks import (
-    DataFetchingTask,
-    DataCalculationTask,
-    DataAggregationTask,
-    DataAnalyzingTask,
-)
-
 
 def forecast_weather():
     """
@@ -19,7 +11,6 @@ def forecast_weather():
     # city_name = "MOSCOW"
     # ywAPI = YandexWeatherAPI()
     # resp = ywAPI.get_forecasting(city_name)
-    pass
 
 
 if __name__ == "__main__":
