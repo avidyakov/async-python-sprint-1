@@ -1,6 +1,7 @@
 import pytest
 
 from models import CityModel, DayModel, HourModel
+from tests.factories import CityModelFactory, DayModelFactory
 
 
 class TestResponseValidator:
@@ -50,3 +51,17 @@ class TestForecastValidator:
         )
 
         assert validator.get_clear_sum() == 2
+
+
+class TestCityModel:
+    def test_get_score(self):
+        day1 = DayModelFactory.build(avg_temp=10, clear_sum=5)
+        day2 = DayModelFactory.build(avg_temp=17, clear_sum=3)
+        city = CityModelFactory.build(forecasts=[day1, day2])
+
+        assert city.get_score() == 35
+
+    def test_get_score_with_none(self):
+        city = CityModelFactory.build()
+
+        assert city.get_score() == 0

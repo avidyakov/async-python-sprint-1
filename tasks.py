@@ -43,4 +43,8 @@ class DataAnalyzingTask:
 
 
 class DataAggregationTask:
-    pass
+    def __init__(self, cities: list[CityModel]) -> None:
+        self.cities = cities
+
+    def run(self) -> CityModel:
+        return max(self.cities, key=lambda city: city.get_score())

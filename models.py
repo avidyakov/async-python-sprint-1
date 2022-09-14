@@ -33,3 +33,9 @@ class DayModel(BaseModel):
 class CityModel(BaseModel):
     city: str
     days: list[DayModel] = Field(alias="forecasts")
+
+    def get_score(self) -> float:
+        try:
+            return sum(day.avg_temp + day.clear_sum for day in self.days)
+        except TypeError:
+            return 0.0
