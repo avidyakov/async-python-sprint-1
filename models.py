@@ -1,7 +1,6 @@
-from datetime import date
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class HourModel(BaseModel):
@@ -15,8 +14,8 @@ class HourModel(BaseModel):
 
 
 class DayModel(BaseModel):
-    date: date
-    hours: list[HourModel]
+    date: str
+    hours: list[HourModel] = Field(exclude=True)
     avg_temp: float | None
     clear_sum: int | None
 
@@ -33,4 +32,4 @@ class DayModel(BaseModel):
 
 class CityModel(BaseModel):
     city: str
-    forecasts: list[DayModel]
+    days: list[DayModel] = Field(alias="forecasts")

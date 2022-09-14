@@ -1,6 +1,9 @@
+import json
+from pathlib import Path
+
 from pydantic import BaseModel
 
-from models import DayModel
+from models import CityModel, DayModel
 from utils import YandexWeatherAPI
 
 
@@ -29,9 +32,15 @@ class DataCalculationTask:
         self.day.clear_sum = self.day.get_clear_sum()
 
 
-class DataAggregationTask:
-    pass
-
-
 class DataAnalyzingTask:
+    def __init__(self, cities: list[CityModel], path: Path) -> None:
+        self.cities = cities
+        self.path = path
+
+    def run(self) -> None:
+        result = [city.dict() for city in self.cities]
+        self.path.write_text(json.dumps(result, indent=4))
+
+
+class DataAggregationTask:
     pass

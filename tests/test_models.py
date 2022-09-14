@@ -7,10 +7,10 @@ class TestResponseValidator:
     def test_validate_response(self, response):
         validator = CityModel(city="Moscow", **response)
 
-        assert len(validator.forecasts) == 5
-        assert validator.forecasts[0].hours[0].hour == 9
-        assert validator.forecasts[0].hours[-1].hour == 19
-        assert len(validator.forecasts[0].hours) == 11
+        assert len(validator.days) == 5
+        assert validator.days[0].hours[0].hour == 9
+        assert validator.days[0].hours[-1].hour == 19
+        assert len(validator.days[0].hours) == 11
 
 
 class TestHourValidator:

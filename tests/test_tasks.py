@@ -1,8 +1,10 @@
+import json
+from pathlib import Path
 from unittest.mock import MagicMock
 
 from models import CityModel
-from tasks import DataCalculationTask, DataFetchingTask
-from tests.factories import DayModelFactory
+from tasks import DataAnalyzingTask, DataCalculationTask, DataFetchingTask
+from tests.factories import CityModelFactory, DayModelFactory
 
 
 class TestDataFetchingTask:
@@ -26,3 +28,16 @@ class TestDataCalculationTask:
 
         assert day.avg_temp == 27
         assert day.clear_sum == 0
+
+
+class TestDataAggregationTask:
+    def test_run(self):
+        cities = CityModelFactory.batch(10)
+        path = Path("result.json")
+
+        task = DataAnalyzingTask(cities, path)
+        task.run()
+
+        result = json.loads(path.read_text())
+        assert len(result) == 10
+        assert not result[0]["days"][0].get("hours")

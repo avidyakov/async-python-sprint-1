@@ -2,7 +2,7 @@ import random
 
 from pydantic_factories import ModelFactory, Use
 
-from models import DayModel, HourModel
+from models import CityModel, DayModel, HourModel
 
 
 class HourModelFactory(ModelFactory):
@@ -16,3 +16,9 @@ class DayModelFactory(ModelFactory):
     __model__ = DayModel
 
     hours = Use(HourModelFactory.batch, size=10)
+
+
+class CityModelFactory(ModelFactory):
+    __model__ = CityModel
+
+    forecasts = Use(DayModelFactory.batch, size=5)
