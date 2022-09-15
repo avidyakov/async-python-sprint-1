@@ -20,7 +20,10 @@ class DayModel(BaseModel):
     clear_sum: int | None
 
     def get_avg_temp(self) -> float:
-        return sum(hour.temp for hour in self.hours) / len(self.hours)
+        try:
+            return sum(hour.temp for hour in self.hours) / len(self.hours)
+        except ZeroDivisionError:
+            return 0.0
 
     def get_clear_sum(self) -> int:
         return sum(hour.is_clear() for hour in self.hours)

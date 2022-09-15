@@ -27,18 +27,28 @@ class TestHourValidator:
         assert validator.is_clear() is expected
 
 
-class TestForecastValidator:
-    def test_get_avg_temp(self):
+class TestDayModel:
+    @pytest.mark.parametrize(
+        "hours, expected",
+        (
+            (
+                [
+                    {"hour": 9, "temp": 10.0, "condition": "clear"},
+                    {"hour": 10, "temp": 20.0, "condition": "clear"},
+                    {"hour": 11, "temp": 30.0, "condition": "clear"},
+                ],
+                20,
+            ),
+            ([], 0.0),
+        ),
+    )
+    def test_get_avg_temp(self, hours, expected):
         validator = DayModel(
             date="2021-01-01",
-            hours=[
-                {"hour": 9, "temp": 10.0, "condition": "clear"},
-                {"hour": 10, "temp": 20.0, "condition": "clear"},
-                {"hour": 11, "temp": 30.0, "condition": "clear"},
-            ],
+            hours=hours,
         )
 
-        assert validator.get_avg_temp() == 20
+        assert validator.get_avg_temp() == expected
 
     def test_get_clear_sum(self):
         validator = DayModel(
