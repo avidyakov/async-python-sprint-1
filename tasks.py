@@ -1,9 +1,9 @@
 import json
 from pathlib import Path
 
-from pydantic import BaseModel
+from loguru import logger
 
-from models import CityModel, DayModel
+from models import CityModel
 from utils import YandexWeatherAPI
 
 
@@ -12,24 +12,40 @@ class DataFetchingTask:
         self,
         city: str,
         ya_weather_api: YandexWeatherAPI,
-        validator: type[BaseModel],
+        model: type[CityModel],
     ) -> None:
         self.city = city
         self.ya_weather_api = ya_weather_api
-        self.validator = validator
+        self.model = model
 
-    def run(self) -> BaseModel:
+    def run(self) -> CityModel:
         response = self.ya_weather_api.get_forecasting(self.city)
-        return self.validator(city=self.city, **response)
+        model = self.model(city=self.city, **response)
+        logger.info(f"Погода в городе {self.city} получена")
+        return model
 
 
 class DataCalculationTask:
-    def __init__(self, day: DayModel) -> None:
-        self.day = day
+    def __init__(self, city: CityModel) -> None:
+        self.city = city
 
-    def run(self) -> None:
-        self.day.avg_temp = self.day.get_avg_temp()
-        self.day.clear_sum = self.day.get_clear_sum()
+    def run(self) -> CityModel:
+        for day in self.city.days:
+            avg_temp = day.get_avg_temp()
+            day.avg_temp = avg_temp
+            logger.info(
+                f"Средняя температура в городе {self.city.city} "
+                f"на {day.date} составляет {avg_temp}"
+            )
+
+            clear_sum = day.get_clear_sum()
+            day.clear_sum = clear_sum
+            logger.info(
+                f"Количество часов без осадков в городе {self.city.city} "
+                f"на {day.date} составляет {clear_sum}"
+            )
+
+        return self.city
 
 
 class DataAnalyzingTask:
@@ -40,6 +56,7 @@ class DataAnalyzingTask:
     def run(self) -> None:
         result = [city.dict() for city in self.cities]
         self.path.write_text(json.dumps(result, indent=4))
+        logger.info(f"Результат сохранен в {self.path}")
 
 
 class DataAggregationTask:
@@ -47,4 +64,6 @@ class DataAggregationTask:
         self.cities = cities
 
     def run(self) -> CityModel:
-        return max(self.cities, key=lambda city: city.get_score())
+        best_city = max(self.cities, key=lambda city: city.get_score())
+        logger.info(f"Лучший город: {best_city.city}")
+        return best_city

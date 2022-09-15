@@ -6,7 +6,7 @@ import pytest
 
 @pytest.fixture
 def response_path() -> Path:
-    return Path("examples/response.json")
+    return Path(__file__).parent.parent / "examples/response.json"
 
 
 @pytest.fixture

@@ -9,7 +9,7 @@ from tasks import (
     DataCalculationTask,
     DataFetchingTask,
 )
-from tests.factories import CityModelFactory, DayModelFactory
+from tests.factories import CityModelFactory
 
 
 class TestDataFetchingTask:
@@ -27,12 +27,13 @@ class TestDataFetchingTask:
 
 class TestDataCalculationTask:
     def test_run(self):
-        day = DayModelFactory.build()
-        task = DataCalculationTask(day)
+        city = CityModelFactory.build()
+        task = DataCalculationTask(city)
         task.run()
 
-        assert day.avg_temp == 27
-        assert day.clear_sum == 0
+        for day in city.days:
+            assert day.avg_temp == 27
+            assert day.clear_sum == 0
 
 
 class TestDataAnalyzingTask:
