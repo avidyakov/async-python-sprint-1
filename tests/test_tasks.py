@@ -31,6 +31,8 @@ class TestDataCalculationTask:
         task = DataCalculationTask(city)
         task.run()
 
+        assert city.score == 135.0
+
         for day in city.days:
             assert day.avg_temp == 27
             assert day.clear_sum == 0
@@ -51,8 +53,11 @@ class TestDataAnalyzingTask:
 
 class TestDataAggregationTask:
     def test_run(self):
-        cities = CityModelFactory.batch(10)
+        cities = CityModelFactory.batch(10, score=100)
+        best_cities = CityModelFactory.batch(3, score=300)
 
-        task = DataAggregationTask(cities)
+        task = DataAggregationTask(cities + best_cities)
+        actual = task.run()
 
-        assert task.run() == cities[0]
+        assert len(actual) == 3
+        assert actual == best_cities

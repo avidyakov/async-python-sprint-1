@@ -39,7 +39,7 @@ class CityModel(BaseModel):
     def get_score(self) -> float:
         try:
             # Складываю среднюю температуру за день
-            # и количество часов с ясной погодой
+            # и количество часов за день с ясной погодой
             return sum(day.avg_temp + day.clear_sum for day in self.days)
         except TypeError:
             return 0.0

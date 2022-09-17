@@ -1,4 +1,5 @@
 import json
+from itertools import takewhile
 from pathlib import Path
 
 from loguru import logger
@@ -45,6 +46,13 @@ class DataCalculationTask:
                 f"на {day.date} составляет {clear_sum}"
             )
 
+        score = self.city.get_score()
+        self.city.score = score
+        logger.info(
+            f"Суммарный балл города {self.city.city} "
+            f"составляет {score}"
+        )
+
         return self.city
 
 
@@ -63,7 +71,17 @@ class DataAggregationTask:
     def __init__(self, cities: list[CityModel]) -> None:
         self.cities = cities
 
-    def run(self) -> CityModel:
-        best_city = max(self.cities, key=lambda city: city.get_score())
-        logger.info(f"Лучший город: {best_city.city}")
-        return best_city
+    def run(self) -> list[CityModel]:
+        self.cities.sort(
+            key=lambda city: city.score, reverse=True
+        )
+        best_cities = list(
+            takewhile(
+                lambda city: city.score == self.cities[0].score,
+                self.cities,
+            )
+        )
+        logger.info(
+            f"Лучшие города: {[city.city for city in best_cities]}"
+        )
+        return best_cities
