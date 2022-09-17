@@ -15,7 +15,7 @@ def run_task(task):
     return task.run()
 
 
-def forecast_weather():
+def forecast_weather(path: Path) -> None:
     """
     Анализ погодных условий по городам
     """
@@ -23,14 +23,13 @@ def forecast_weather():
         DataFetchingTask(city, YandexWeatherAPI(), CityModel)
         for city in CITIES
     ]
-    with ThreadPool(processes=8) as pool:
-        cities = pool.map(lambda task: task.run(), fetching_tasks)
+    with ThreadPool(processes=8) as pool:  # Пул потоков
+        cities = pool.map(run_task, fetching_tasks)
 
     calculation_tasks = [DataCalculationTask(city) for city in cities]
-    with Pool(processes=2) as pool:
+    with Pool(processes=2) as pool:  # Пул процессов
         cities = pool.map(run_task, calculation_tasks)
 
-    path = Path(__file__).parent / "result.json"
     analyzing_task = DataAnalyzingTask(cities, path)
     analyzing_task.run()
 
@@ -39,4 +38,5 @@ def forecast_weather():
 
 
 if __name__ == "__main__":
-    forecast_weather()
+    result_path = Path(__file__).parent / "result.json"
+    forecast_weather(result_path)
