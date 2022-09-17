@@ -4,16 +4,6 @@ from models import CityModel, DayModel, HourModel
 from tests.factories import CityModelFactory, DayModelFactory
 
 
-class TestResponseValidator:
-    def test_validate_response(self, response):
-        validator = CityModel(city="Moscow", **response)
-
-        assert len(validator.days) == 5
-        assert validator.days[0].hours[0].hour == 9
-        assert validator.days[0].hours[-1].hour == 19
-        assert len(validator.days[0].hours) == 11
-
-
 class TestHourValidator:
     @pytest.mark.parametrize(
         "condition, expected",
@@ -64,6 +54,15 @@ class TestDayModel:
 
 
 class TestCityModel:
+
+    def test_validate(self, response):
+        validator = CityModel(city="Moscow", **response)
+
+        assert len(validator.days) == 5
+        assert validator.days[0].hours[0].hour == 9
+        assert validator.days[0].hours[-1].hour == 19
+        assert len(validator.days[0].hours) == 11
+
     def test_get_score(self):
         day1 = DayModelFactory.build(avg_temp=10, clear_sum=5)
         day2 = DayModelFactory.build(avg_temp=17, clear_sum=3)

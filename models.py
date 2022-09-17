@@ -1,6 +1,4 @@
-from typing import Any
-
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 
 class HourModel(BaseModel):
@@ -28,17 +26,20 @@ class DayModel(BaseModel):
     def get_clear_sum(self) -> int:
         return sum(hour.is_clear() for hour in self.hours)
 
-    def __init__(self, **data: Any) -> None:
-        super().__init__(**data)
-        self.hours = [hour for hour in self.hours if 9 <= hour.hour <= 19]
+    @validator("hours")
+    def filter_hours(cls, hours: list[HourModel]) -> list[HourModel]:
+        return [hour for hour in hours if 9 <= hour.hour <= 19]
 
 
 class CityModel(BaseModel):
     city: str
     days: list[DayModel] = Field(alias="forecasts")
+    score: float | None
 
     def get_score(self) -> float:
         try:
+            # Складываю среднюю температуру за день
+            # и количество часов с ясной погодой
             return sum(day.avg_temp + day.clear_sum for day in self.days)
         except TypeError:
             return 0.0
